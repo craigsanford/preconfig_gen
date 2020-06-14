@@ -1,10 +1,12 @@
 # This will go to an orchestrator and pull the current config from the specified appliance.  It will then 
 # create a preconfig file with the configuration information of that appliance. 
+
+# 2020.06.13 - Add Loopbacks
 # 2020.02.24 - BGP disabled for now 
 # 2020.02.20 - Last Tested on 8.8.5
 # 2020.02.04 - Local Communities is now required
 #
-#
+
 # Known Limitations:
 # * No Software Version
 # * No HA
@@ -191,7 +193,7 @@ yaml_text += "  useSharedSubnetInfo: " + str(sys['auto_subnet']['self']).lower()
 yaml_text += "  advertiseLocalLanSubnets: " + str(sys['auto_subnet']['add_local_lan']).lower() + "\n"
 yaml_text += "  advertiseLocalWanSubnets: " + str(sys['auto_subnet']['add_local_wan']).lower() + "\n"
 yaml_text += "  localMetric: " + str(sys['auto_subnet']['add_local_metric']) + "\n"
-yaml_text += "  localCommunities: "
+yaml_text += "  localCommunities: \n"
 
 try:
     sub3 = orch.get("/appliance/rest/" + nepk + "/subnets3/configured").json()
@@ -213,6 +215,31 @@ try:
             yaml_text += "      comment: " + str(sub3['prefix'][i]['nhop'][nhop]['interface'][int]['comment']) + "\n"
 except:
     print("Uhoh")
+
+#********
+#LOOPBACK SECTION
+
+loopback = orch.get("/appliance/rest/" + nepk + "/virtualif/loopback").json()
+user_def_loopback = False
+loop_text = ""
+if(loopback):
+    for int in loopback:
+        if(not loopback[int]['gms_marked']):
+            user_def_loopback = True
+            loop_text += "    - interfaceId: " + int + "\n"
+            loop_text += "      adminStatus: " 
+            if(loopback[int]['admin']):
+                loop_text += "Up\n"
+            else:
+                loop_text += "Down\n"
+            loop_text += "      ipAddressMask: " + loopback[int]['ipaddr'] + "/" + str(loopback[int]['nmask']) + "\n\n"
+#            loop_text += "      interfaceLabel: " + + "\n"
+#            loop_text += "      zone: " + + "\n" 
+
+if(user_def_loopback):
+    yaml_text += "\nloopbackInterface:\n"
+    yaml_text += "  loopbacks:\n"
+    yaml_text += loop_text
 
 #*********
 bgp = orch.get("/appliance/rest/" + nepk + "/bgp/config/system").json()
