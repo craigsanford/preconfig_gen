@@ -37,7 +37,7 @@ gms_url = input("Orch IP/Hostname?")
 #gms_password = "admin"
 yaml_text = ""
 dhcp_yaml_text = ""
-post = False
+post = True 
 dhcpInfo = False
 #
 orch = OrchHelper(gms_url)
@@ -232,9 +232,11 @@ if(loopback):
                 loop_text += "Up\n"
             else:
                 loop_text += "Down\n"
-            loop_text += "      ipAddressMask: " + loopback[int]['ipaddr'] + "/" + str(loopback[int]['nmask']) + "\n\n"
-#            loop_text += "      interfaceLabel: " + + "\n"
-#            loop_text += "      zone: " + + "\n" 
+            loop_text += "      ipAddressMask: " + loopback[int]['ipaddr'] + "/" + str(loopback[int]['nmask']) + "\n"
+            if(loopback[int]['zone']):
+                loop_text += "      zone: " + zones[str(loopback[int]['zone'])]['name'] + "\n" 
+            loop_int = loopback[int]['label']
+            loop_text += "      interfaceLabel: " + labels['lan'][loop_int]['name'] + "\n\n"
 
 if(user_def_loopback):
     yaml_text += "\nloopbackInterface:\n"
