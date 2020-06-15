@@ -27,8 +27,8 @@
 
 
 from orchhelp import OrchHelper
-import getNepkFromHostname
-import post_yaml_to_orch
+#import getNepkFromHostname
+#import post_yaml_to_orch
 import getpass
 
 #gms_url = ""
@@ -37,7 +37,7 @@ gms_url = input("Orch IP/Hostname?")
 #gms_password = "admin"
 yaml_text = ""
 dhcp_yaml_text = ""
-post = False 
+post = True 
 dhcpInfo = False
 #
 orch = OrchHelper(gms_url)
@@ -52,7 +52,6 @@ orch.post("/authentication/login", {"user":orch.user, "password":orch.password, 
 
 hostname = input("What Appliance?")
 
-#nepk = getNepkFromHostname.standard(orch, hostname)
 nepk = orch.get_hostname(hostname)
 #Build Out useful info
 firewallMode = ["all", "harden", "stateful", "statefulsnat"]
@@ -259,7 +258,7 @@ if(bgp['enable']):
     yaml_text += "  propagateAsPath: " + str(bgp['remote_as_path_advertise']).lower() + "\n"
     yaml_text += "  redistOspfToBgp: " + str(bgp['redist_ospf']).lower() + "\n"
     yaml_text += "  filterTag: " + str(bgp['redist_ospf_filter']) + "\n"
-	
+
     # if(bgp_neigh):
         # yaml_text += "  neighbors: \n"
         # for i in range(len(list(bgp_neigh))):
@@ -334,7 +333,7 @@ if(ipf):
 
 
 if(post):
-    post_yaml_to_orch.post(orch, hostname, yaml_text)
+    orch.post_preconfig( hostname, yaml_text)
 else: 
-	print(yaml_text)
+    print(yaml_text)
 orch.logout()
