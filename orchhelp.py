@@ -10,6 +10,12 @@ class OrchHelper:
         self.data = {}
         self.user = "admin"
         self.password = "admin" 
+
+    def get_hostname(self, hostname):
+        app = self.get("/appliance").json()
+        for i in app:
+                if (i['hostName']== hostname):
+                        return i['nePk']
         
     def login(self):
         try:

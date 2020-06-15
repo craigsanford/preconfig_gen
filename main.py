@@ -37,7 +37,7 @@ gms_url = input("Orch IP/Hostname?")
 #gms_password = "admin"
 yaml_text = ""
 dhcp_yaml_text = ""
-post = True 
+post = False 
 dhcpInfo = False
 #
 orch = OrchHelper(gms_url)
@@ -52,7 +52,8 @@ orch.post("/authentication/login", {"user":orch.user, "password":orch.password, 
 
 hostname = input("What Appliance?")
 
-nepk = getNepkFromHostname.standard(orch, hostname)
+#nepk = getNepkFromHostname.standard(orch, hostname)
+nepk = orch.get_hostname(hostname)
 #Build Out useful info
 firewallMode = ["all", "harden", "stateful", "statefulsnat"]
 labels = orch.get("/gms/interfaceLabels").json()
