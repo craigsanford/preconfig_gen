@@ -1,6 +1,7 @@
 # This will go to an orchestrator and pull the current config from the specified appliance.  It will then 
 # create a preconfig file with the configuration information of that appliance. 
 
+# 2020.06.30 - Begin modularization project
 # 2020.06.13 - Add Loopbacks
 # 2020.02.24 - BGP disabled for now 
 # 2020.02.20 - Last Tested on 8.8.5
@@ -8,6 +9,7 @@
 #
 
 # Known Limitations:
+# * Python 3.X only
 # * No Software Version
 # * No HA
 # * Incomplete DHCP
@@ -27,9 +29,8 @@
 
 
 from orchhelp import OrchHelper
-#import getNepkFromHostname
-#import post_yaml_to_orch
 import getpass
+import preconf
 
 #gms_url = ""
 gms_url = input("Orch IP/Hostname?")
@@ -37,7 +38,7 @@ gms_url = input("Orch IP/Hostname?")
 #gms_password = "admin"
 yaml_text = ""
 dhcp_yaml_text = ""
-post = True 
+post = False 
 dhcpInfo = False
 #
 orch = OrchHelper(gms_url)
@@ -61,20 +62,7 @@ zones = orch.get("/zones").json()
 #NOW THAT WE HAVE NEPK, GRAB INFO
 
 #appliance extra info
-info = orch.get("/appliance/extraInfo/" + nepk).json()
-yaml_text += "applianceInfo: \n"
-yaml_text += "  hostname: " + hostname + "\n"
-yaml_text += "  location:\n"
-yaml_text += "    address: " + info['location']['address'] + "\n"
-yaml_text += "    address2: " + info['location']['address2'] + "\n"
-yaml_text += "    city: " + info['location']['city'] + "\n"
-yaml_text += "    state: " + info['location']['state'] + "\n"
-yaml_text += "    zipCode: " + info['location']['zipCode'] + "\n"
-yaml_text += "    country: " + info['location']['country'] + "\n"
-yaml_text += "  contact:\n"
-yaml_text += "    name: " + info['contact']['name'] + "\n"
-yaml_text += "    email: " + info['contact']['email'] + "\n"
-yaml_text += "    phoneNumber: " + info['contact']['phoneNumber'] + "\n"
+yaml_text += preconf.extra_info(orch, nepk, hostname) 
 
 #deployment
 dep = orch.get("/appliance/rest/" + nepk + "/deployment").json()
