@@ -20,11 +20,10 @@ def extra_info(orch, nepk, hostname):
     yaml_text += "    phoneNumber: " + info['contact']['phoneNumber'] + "\n"
     return yaml_text
 
-def deployment(orch, nepk, labels):
+def deployment(orch, nepk, labels, zones):
     yaml_text = ""
     dhcp_yaml_text = ""
     dep = orch.get("/appliance/rest/" + nepk + "/deployment").json()
-    zones = orch.get("/zones").json()
     firewallMode = ["all", "harden", "stateful", "statefulsnat"]
     yaml_text += "\ndeploymentInfo: \n"
     yaml_text += "  deploymentMode: inline-router \n"
@@ -161,7 +160,7 @@ def routes(orch, nepk):
 
     return yaml_text
 
-def loopback(orch, nepk, labels):
+def loopback(orch, nepk, labels, zones):
     yaml_text = ""
     loopback = orch.get("/appliance/rest/" + nepk + "/virtualif/loopback").json()
     user_def_loopback = False
@@ -180,7 +179,8 @@ def loopback(orch, nepk, labels):
                 if(loopback[int]['zone']):
                     loop_text += "      zone: " + zones[str(loopback[int]['zone'])]['name'] + "\n"
                 loop_int = loopback[int]['label']
-                loop_text += "      interfaceLabel: " + labels['lan'][loop_int]['name'] + "\n\n"
+                if(loop_int):
+                    loop_text += "      interfaceLabel: " + labels['lan'][loop_int]['name'] + "\n\n"
 
     if(user_def_loopback):
         yaml_text += "\nloopbackInterface:\n"

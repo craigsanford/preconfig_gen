@@ -33,7 +33,7 @@ import getpass
 import preconf
 
 gms_url = "seteam-orchestrator.silverpeak.cloud"
-#gms_url = input("Orch IP/Hostname?")
+gms_url = input("Orch IP/Hostname?")
 gms_user = "craigsanford"
 #gms_password = "admin"
 yaml_text = ""
@@ -43,7 +43,7 @@ dhcpInfo = False
 #
 orch = OrchHelper(gms_url)
 orch.user = gms_user
-#orch.user = input("Username? ")
+orch.user = input("Username? ")
 #orch.password = gms_password
 orch.password = getpass.getpass("Password?: ")
 #orch.post("/authentication/loginToken", {"user": orch.user, "password":orch.password, "TempCode":False})
@@ -51,15 +51,15 @@ orch.password = getpass.getpass("Password?: ")
 #orch.post("/authentication/login", {"user":orch.user, "password":orch.password, "token":token})
 orch.login()
 
-#hostname = input("What Appliance?")
 hostname = "Baltimore-Sanford"
+hostname = input("What Appliance?")
 
 nepk = orch.get_hostname(hostname)
 #Build Out useful info
 #firewallMode = ["all", "harden", "stateful", "statefulsnat"]
-#Labels is needed in Deployment and Loopback
+#Labels and zones are needed in Deployment and Loopback
 labels = orch.get("/gms/interfaceLabels").json()
-#zones = orch.get("/zones").json()
+zones = orch.get("/zones").json()
 
 #NOW THAT WE HAVE NEPK, GRAB INFO
 
@@ -67,13 +67,13 @@ labels = orch.get("/gms/interfaceLabels").json()
 yaml_text += preconf.extra_info(orch, nepk, hostname) 
 
 #deployment
-dep_text, dhcp_yaml_text = preconf.deployment(orch, nepk, labels)
+dep_text, dhcp_yaml_text = preconf.deployment(orch, nepk, labels, zones)
 yaml_text += dep_text
 yaml_text += dhcp_yaml_text
 
 #system - have to for routes info
 yaml_text += preconf.routes(orch, nepk)
-yaml_text += preconf.loopback(orch, nepk, labels)
+yaml_text += preconf.loopback(orch, nepk, labels, zones)
 #*********
 bgp = orch.get("/appliance/rest/" + nepk + "/bgp/config/system").json()
 bgp_neigh = orch.get("/appliance/rest/" + nepk + "/bgp/config/neighbor").json()
