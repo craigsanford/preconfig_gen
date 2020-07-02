@@ -33,26 +33,24 @@ import getpass
 import preconf
 
 gms_url = "seteam-orchestrator.silverpeak.cloud"
-#gms_url = input("Orch IP/Hostname?")
+gms_url = input("Orch IP/Hostname?")
 gms_user = "craigsanford"
-#gms_password = "admin"
+#gms_user = input("username?")
+gms_password = getpass.getpass("Password?: ")
+
 yaml_text = ""
 dhcp_yaml_text = ""
 post = True 
-dhcpInfo = False
-#
-orch = OrchHelper(gms_url)
-orch.user = gms_user
-#orch.user = input("Username? ")
-#orch.password = gms_password
-orch.password = getpass.getpass("Password?: ")
+#dhcpInfo = False
+
+orch = OrchHelper(gms_url, gms_user, gms_password)
 #orch.post("/authentication/loginToken", {"user": orch.user, "password":orch.password, "TempCode":False})
 #token = input("Input Token: ")
 #orch.post("/authentication/login", {"user":orch.user, "password":orch.password, "token":token})
 orch.login()
 
 hostname = "Baltimore-Sanford"
-#hostname = input("What Appliance?")
+hostname = input("What Appliance?")
 
 nepk = orch.get_hostname(hostname)
 #Build Out useful info

@@ -23,6 +23,7 @@ def extra_info(orch, nepk, hostname):
 def deployment(orch, nepk, labels, zones):
     yaml_text = ""
     dhcp_yaml_text = ""
+    dhcpInfo = False
     dep = orch.get("/appliance/rest/" + nepk + "/deployment").json()
     firewallMode = ["all", "harden", "stateful", "statefulsnat"]
     yaml_text += "\ndeploymentInfo: \n"
@@ -78,7 +79,10 @@ def deployment(orch, nepk, labels, zones):
                     dhcp_yaml_text += "      dhcpAddressMask: " + dep['modeIfs'][ifs]['applianceIPs'][ips]['dhcpd']['server']['prefix'] + "\n"
                     dhcp_yaml_text += "      startIpAddress: " + dep['modeIfs'][ifs]['applianceIPs'][ips]['dhcpd']['server']['ipStart'] + "\n"
                     dhcp_yaml_text += "      endIpAddress: " + dep['modeIfs'][ifs]['applianceIPs'][ips]['dhcpd']['server']['ipEnd'] + "\n"
-                    dhcp_yaml_text += "      gatewayIpAddress: " + dep['modeIfs'][ifs]['applianceIPs'][ips]['dhcpd']['server']['gw'][0] + "\n"
+                    try:
+                        dhcp_yaml_text += "      gatewayIpAddress: " + dep['modeIfs'][ifs]['applianceIPs'][ips]['dhcpd']['server']['gw'][0] + "\n"
+                    except IndexError:
+                        print("There is no gateway for this DHCP Scope.")
                     if(len(dep['modeIfs'][ifs]['applianceIPs'][ips]['dhcpd']['server']['dns'])):
                         dhcp_yaml_text += "      dnsServers: \n"
                         for i in range(len(dep['modeIfs'][ifs]['applianceIPs'][ips]['dhcpd']['server']['dns'])):
