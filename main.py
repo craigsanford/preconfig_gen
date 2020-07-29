@@ -32,9 +32,7 @@ from orchhelp import OrchHelper
 import getpass
 import preconf
 
-gms_url = "seteam-orchestrator.silverpeak.cloud"
 gms_url = input("Orch IP/Hostname?")
-gms_user = "craigsanford"
 gms_user = input("username?")
 gms_password = getpass.getpass("Password?: ")
 
@@ -49,7 +47,6 @@ orch = OrchHelper(gms_url, gms_user, gms_password)
 #orch.post("/authentication/login", {"user":orch.user, "password":orch.password, "token":token})
 orch.login()
 
-hostname = "Baltimore-Sanford"
 hostname = input("What Appliance?")
 
 nepk = orch.get_hostname(hostname)
