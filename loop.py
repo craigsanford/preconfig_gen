@@ -33,52 +33,58 @@ import getpass
 import preconf
 
 gms_url = "seteam-orchestrator.silverpeak.cloud"
-gms_url = input("Orch IP/Hostname?")
+#gms_url = input("Orch IP/Hostname?")
 gms_user = "craigsanford"
-gms_user = input("username?")
-gms_password = getpass.getpass("Password?: ")
-
+#gms_password = "admin"
 yaml_text = ""
 dhcp_yaml_text = ""
-post = False 
+post = True 
 #dhcpInfo = False
-
-orch = OrchHelper(gms_url, gms_user, gms_password)
+#
+orch = OrchHelper(gms_url)
+orch.user = gms_user
+#orch.user = input("Username? ")
+#orch.password = gms_password
+orch.password = getpass.getpass("Password?: ")
 #orch.post("/authentication/loginToken", {"user": orch.user, "password":orch.password, "TempCode":False})
 #token = input("Input Token: ")
 #orch.post("/authentication/login", {"user":orch.user, "password":orch.password, "token":token})
 orch.login()
 
-hostname = "Baltimore-Sanford"
-hostname = input("What Appliance?")
+#hostname = "Baltimore-Sanford"
+#hostname = input("What Appliance?")
 
-nepk = orch.get_hostname(hostname)
+#nepk = orch.get_hostname(hostname)
 #Build Out useful info
 #firewallMode = ["all", "harden", "stateful", "statefulsnat"]
 #Labels and zones are needed in Deployment and Loopback
 labels = orch.get("/gms/interfaceLabels").json()
-#zones = orch.get("/zones").json()
-zones = orch.get("/zones?source=menu_firewall_zones_id").json()
-#NOW THAT WE HAVE NEPK, GRAB INFO
+zones = orch.get("/zones").json()
+ec_list = orch.get("/appliance").json()
+for ec in ec_list:
+    hostname = ec['hostName']
+    nepk = ec['nePk']
+    print(hostname)
+    #NOW THAT WE HAVE NEPK, GRAB INFO
 
-#appliance extra info
-yaml_text += preconf.extra_info(orch, nepk, hostname) 
+    #appliance extra info
+    yaml_text += preconf.extra_info(orch, nepk, hostname)
 
-#deployment
-dep_text, dhcp_yaml_text = preconf.deployment(orch, nepk, labels, zones)
-yaml_text += dep_text
-yaml_text += dhcp_yaml_text
+    #deployment
+    dep_text, dhcp_yaml_text = preconf.deployment(orch, nepk, labels, zones)
+    yaml_text += dep_text
+    yaml_text += dhcp_yaml_text
 
-#system - have to for routes info
-#yaml_text += preconf.routes(orch, nepk)
-yaml_text += preconf.loopback(orch, nepk, labels, zones)
-yaml_text += preconf.bgp(orch, nepk)
-yaml_text += preconf.templates(orch, nepk)
-yaml_text += preconf.bio(orch, nepk)
-yaml_text += preconf.inbound_port_forwarding(orch, nepk)
+    #system - have to for routes info
+    #yaml_text += preconf.routes(orch, nepk)
+    yaml_text += preconf.loopback(orch, nepk, labels, zones)
+    yaml_text += preconf.bgp(orch, nepk)
+    yaml_text += preconf.templates(orch, nepk)
+    yaml_text += preconf.bio(orch, nepk)
+    yaml_text += preconf.inbound_port_forwarding(orch, nepk)
 
-if(post):
-    orch.post_preconfig( hostname, yaml_text)
-else: 
-    print(yaml_text)
+    if(post):
+        orch.post_preconfig( hostname, yaml_text)
+    else:
+        print(yaml_text)
 orch.logout()

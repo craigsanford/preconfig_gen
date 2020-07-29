@@ -4,7 +4,8 @@
 
 def extra_info(orch, nepk, hostname):
     yaml_text = "" 
-    info = orch.get("/appliance/extraInfo/" + nepk).json()
+#    info = orch.get("/appliance/extraInfo/" + nepk).json()
+    info = orch.get("/appliance/extraInfo/" + nepk + "?source=context_menu_id").json()  
     yaml_text += "applianceInfo: \n"
     yaml_text += "  hostname: " + hostname + "\n"
     yaml_text += "  location:\n"
