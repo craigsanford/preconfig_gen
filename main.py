@@ -32,9 +32,13 @@ from orchhelp import OrchHelper
 import getpass
 import preconf
 
-gms_url = input("Orch IP/Hostname?")
-gms_user = input("username?")
-gms_password = getpass.getpass("Password?: ")
+#gms_url = input("Orch IP/Hostname?")
+#gms_user = input("username?")
+#gms_password = getpass.getpass("Password?: ")
+
+gms_url = "silverpeakonlinedemo-orch-use1.silverpeak.cloud"  
+gms_user = "demo-112357" 
+gms_password = "Password520!" 
 
 yaml_text = ""
 dhcp_yaml_text = ""
