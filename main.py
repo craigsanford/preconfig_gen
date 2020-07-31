@@ -42,7 +42,11 @@ gms_password = "Password520!"
 
 yaml_text = ""
 dhcp_yaml_text = ""
-post = False 
+post_input = input("Post preconfiguration file back to Orchestrator? Any input will post, hit <Enter> for False: ")
+if(post_input):
+    post = True
+else:
+    post = False 
 #dhcpInfo = False
 
 orch = OrchHelper(gms_url, gms_user, gms_password)
@@ -87,3 +91,10 @@ if(post):
 else: 
     print(yaml_text)
 orch.logout()
+
+write_to_file = input("File name to write to in local directory, hit enter to skip: ")
+#if(write_to_file):
+
+
+
+
