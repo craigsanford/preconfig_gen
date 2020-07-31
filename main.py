@@ -51,8 +51,12 @@ orch = OrchHelper(gms_url, gms_user, gms_password)
 #orch.post("/authentication/login", {"user":orch.user, "password":orch.password, "token":token})
 orch.login()
 
-hostname = input("What Appliance?")
-
+hostname = input("What Appliance? (Hit <Enter> to see the list): ")
+while(not hostname):
+    app_list = orch.get_appliances()
+    for i in app_list:
+        print(i['hostName'])
+    hostname = input("What Appliance?")
 nepk = orch.get_hostname(hostname)
 #Build Out useful info
 #firewallMode = ["all", "harden", "stateful", "statefulsnat"]
