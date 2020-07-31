@@ -1,0 +1,58 @@
+applianceInfo: 
+  hostname: California1
+  location:
+    address: 
+    address2: 
+    city: San Francisco
+    state: California
+    zipCode: 94102
+    country: US
+  contact:
+    name: 
+    email: 
+    phoneNumber: 
+
+deploymentInfo: 
+  deploymentMode: inline-router 
+  totalOutboundBandwidth: 200000
+  totalInboundBandwidth: 200000
+  shapeInboundTraffic: true 
+
+  deploymentInterfaces: 
+
+    - interfaceName: lan0 
+      interfaceComment: 
+      ipAddressMask: 172.30.2.250/23
+      interfaceType: lan 
+
+    - interfaceName: wan0 
+      interfaceComment: 
+      ipAddressMask: 
+      interfaceLabel:  MPLS1
+      interfaceType: wan 
+      outboundMaxBandwidth: 100000
+      inboundMaxBandwidth: 100000
+      firewallMode: statefulsnat
+      behindNat: auto
+
+    - interfaceName: wan1 
+      interfaceComment: 
+      ipAddressMask: 
+      interfaceLabel:  INET1
+      interfaceType: wan 
+      outboundMaxBandwidth: 100000
+      inboundMaxBandwidth: 100000
+      firewallMode: statefulsnat
+      behindNat: auto
+
+templateGroups: 
+  groups: 
+    - Default Template Group
+    - North America Region
+
+businessIntentOverlays:
+  overlays:
+    - RealTime
+    - CriticalApps
+    - BulkApps
+    - DefaultOverlay

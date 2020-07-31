@@ -93,7 +93,10 @@ else:
 orch.logout()
 
 write_to_file = input("File name to write to in local directory, hit enter to skip: ")
-#if(write_to_file):
+if(write_to_file):
+    with open(write_to_file, "a+") as f:
+        f.write(yaml_text)
+
 
 
 
