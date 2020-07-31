@@ -1,0 +1,79 @@
+applianceInfo: 
+  hostname: Baltimore-Sanford
+  location:
+    address: 
+    address2: 
+    city: Baltimore
+    state: MD
+    zipCode: 
+    country: US
+  contact:
+    name: 
+    email: 
+    phoneNumber: 
+
+deploymentInfo: 
+  deploymentMode: inline-router 
+  totalOutboundBandwidth: 50000
+  totalInboundBandwidth: 50000
+  shapeInboundTraffic: true 
+
+  deploymentInterfaces: 
+
+    - interfaceName: lan0 
+      interfaceComment: 
+      zone: SOHO
+      ipAddressMask: 10.168.13.1/24
+      interfaceType: lan 
+      interfaceLabel:  USERS
+
+    - interfaceName: wan0 
+      interfaceComment: 
+      zone: UNTRUSTED
+      ipAddressMask: 
+      interfaceLabel:  INETA
+      interfaceType: wan 
+      outboundMaxBandwidth: 50000
+      inboundMaxBandwidth: 50000
+      firewallMode: statefulsnat
+      behindNat: auto
+
+loopbackInterface:
+  loopbacks:
+    - interfaceId: lo0
+      adminStatus: Up
+      ipAddressMask: 10.42.42.33/32
+      interfaceLabel: LOOPBACK
+
+    - interfaceId: lo1
+      adminStatus: Up
+      ipAddressMask: 10.43.43.33/32
+      interfaceLabel: LOOPBACK
+
+
+bgpSystemConfig: 
+  enable: true 
+  asn: 64631
+  routerId: 10.45.44.114
+  enableGracefulRestart: false
+  maxRestartTime: 121
+  maxStalePathTime: 150
+  propagateAsPath: false
+  redistOspfToBgp: true
+  filterTag: 0
+
+templateGroups: 
+  groups: 
+    - Default Template Group
+    - US-EAST
+    - Apply Local Users
+    - Enable DNS Proxy
+
+businessIntentOverlays:
+  overlays:
+    - RECREATIONAL
+    - BUSINESS
+    - BATCH
+    - GUEST
+    - REALTIME
+    - UNCLASSIFIED
