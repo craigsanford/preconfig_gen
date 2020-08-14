@@ -25,7 +25,9 @@ def deployment(orch, nepk, labels, zones):
     yaml_text = ""
     dhcp_yaml_text = ""
     dhcpInfo = False
-    dep = orch.get("/appliance/rest/" + nepk + "/deployment").json()
+#RBAC may need the ?source=menu_deployment_id
+    dep = orch.get("/appliance/rest/" + nepk + "/deployment?source=menu_deployment_id").json()
+
     firewallMode = ["all", "harden", "stateful", "statefulsnat"]
     yaml_text += "\ndeploymentInfo: \n"
     yaml_text += "  deploymentMode: inline-router \n"
@@ -167,7 +169,7 @@ def routes(orch, nepk):
 
 def loopback(orch, nepk, labels, zones):
     yaml_text = ""
-    loopback = orch.get("/appliance/rest/" + nepk + "/virtualif/loopback").json()
+    loopback = orch.get("/appliance/rest/" + nepk + "/virtualif/loopback?source=menu_deployment_id").json()
     user_def_loopback = False
     loop_text = ""
     if(loopback):
@@ -197,8 +199,8 @@ def loopback(orch, nepk, labels, zones):
 
 def bgp(orch, nepk):
     yaml_text = ""
-    bgp = orch.get("/appliance/rest/" + nepk + "/bgp/config/system").json()
-    bgp_neigh = orch.get("/appliance/rest/" + nepk + "/bgp/config/neighbor").json()
+    bgp = orch.get("/appliance/rest/" + nepk + "/bgp/config/system?source=menu_deployment_id").json()
+    bgp_neigh = orch.get("/appliance/rest/" + nepk + "/bgp/config/neighbor?source=menu_deployment_id").json()
     if(bgp['enable']):
         yaml_text += "\nbgpSystemConfig: \n"
         yaml_text += "  enable: true \n"
@@ -247,7 +249,7 @@ def bgp(orch, nepk):
 
 def templates(orch, nepk):
     yaml_text = ""
-    templates = orch.get("/template/applianceAssociation/" + nepk).json()
+    templates = orch.get("/template/applianceAssociation/" + nepk + "?source=menu_deployment_id").json()
     yaml_text += "\ntemplateGroups: \n"
     yaml_text += "  groups: \n"
     for i in range(len(templates['templateIds'])):
@@ -272,7 +274,7 @@ def bio(orch, nepk):
 
 def inbound_port_forwarding(orch, nepk):
     yaml_text = ""
-    ipf = orch.get("/portForwarding/" + nepk).json()
+    ipf = orch.get("/portForwarding/" + nepk + "?source=menu_deployment_id").json()
     if(ipf):
         yaml_text += "\ninboundPortForwarding:\n"
         yaml_text += "  portForwardingRules:\n"
